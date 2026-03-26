@@ -28,10 +28,10 @@ Puedes usar cualquiera de estos comandos:
 
 ```bash
 # Opción 1: Comando moderno de FastAPI (recomendado)
-fastapi dev main.py
+fastapi dev .\tasks_management_app\main.py
 
 # Opción 2: Uvicorn tradicional
-uvicorn main:app --reload
+uvicorn tasks_management_app.main:app --reload
 ```
 
 La API estará disponible en `http://localhost:8000`
@@ -53,7 +53,7 @@ La API estará disponible en `http://localhost:8000`
 ## Ejecutar tests
 
 ```bash
-python test_api.py
+python clients_task_management_app/test_api.py
 ```
 
 ## Documentación interactiva
