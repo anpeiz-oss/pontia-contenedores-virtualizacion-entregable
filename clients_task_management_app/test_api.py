@@ -1,7 +1,3 @@
-from fastapi import requests
-from urllib3 import response
-from pydantic.deprecated import json
-from datetime import datetime, date, timedelta
 import requests
 
 BASE_URL = "http://localhost:8000"
@@ -33,7 +29,7 @@ def test_crear_tarea_ko():
     print("Test crear tarea KO completado con EXITO !!!\n")
 
 
-def test_obtener_tarea_1_ok():
+def test_obtener_task1_ok():
     response = requests.get(f"{BASE_URL}/tasks/1")
     print(response.json())
     assert response.status_code == 200
@@ -44,8 +40,34 @@ def test_obtener_tarea_1_ok():
     assert response.json()["completada"] == False
     print("El detalle de la tarea con id 1 coincide con el esperado.")
 
-    print("Test obtener tarea 1 OK completado con EXITO !!!\n")
+    print("Test obtener task1 OK completado con EXITO !!!\n")
+
+def test_actualizar_task1_ok():
+    response = requests.patch(f"{BASE_URL}/tasks/1", json={
+        "titulo": "Test OK Actualizado mediante PATCH",
+        "contenido": "Contenido de tarea correcto, sin palabras malsonantes y con fecha de deadline posterior a la fecha actual. La fecha de deadline ha sido actualizada.",
+        "deadline": "2026-12-31",
+        "completada": False
+    })
+    print(f"Se espera que el codigo de respuesta sea 200 y se ha obtenido el siguiente: {response.status_code}")
+    assert response.status_code == 200
+    print(f"El objeto actualizado que devuelve el endpoint es el siguiente: \n{response.json()}")
+
+    print("Test actualizar task1 OK completado con EXITO !!!\n")
+
+def test_actualizar_nonexistent_task_ko():
+    response = requests.patch(f"{BASE_URL}/tasks/2", json={
+        "titulo": "Test KO mediante PATCH",
+        "contenido": "Contenido de tarea correcto, sin palabras malsonantes y con fecha de deadline posterior a la fecha actual.",
+        "deadline": "2028-01-01",
+        "completada": False
+    })
+    print(f"Se ha obtenido el siguiente status_code: {response.status_code} y se esperaba el 404")
+    assert response.status_code == 404
     
+    print("Test actualizar nonexistent task KO completado con EXITO !!!\n")
+
+
 def test_obtener_task2_ko():
     response = requests.get(f"{BASE_URL}/tasks/2")
     assert response.status_code == 404
@@ -107,8 +129,8 @@ def test_borrar_task1_ok():
     print(f"La longitud de la lista de tareas obtenidas antes de borrar la task1 es {len(antes.json())}")
     
     response = requests.delete(f"{BASE_URL}/tasks/1")
-    assert response.status_code == 204
     print(f"Se espera un código de respuesta 204 como resultado de la eliminación de una tarea existente y el código de respuesta obtenido es {response.status_code}")
+    assert response.status_code == 204
 
     despues = requests.get(f"{BASE_URL}/tasks/")
     assert len(despues.json()) == len(antes.json()) - 1
@@ -142,7 +164,9 @@ if __name__ == "__main__":
     
     test_crear_tarea_ok()
     test_crear_tarea_ko()
-    test_obtener_tarea_1_ok()
+    test_obtener_task1_ok()
+    test_actualizar_task1_ok()
+    test_actualizar_nonexistent_task_ko()
     test_obtener_task2_ko()
     test_marcar_task1_completada_ok()
     test_obtener_todas_tareas()
@@ -154,4 +178,4 @@ if __name__ == "__main__":
     test_obtener_todas_tareas_tras_borrado_task1()
     test_eliminacion_palabras_malsonantes_ok()
     
-    print("\nTests completados\n")
+    print("\nBatería completa de Tests ejecutados con EXITO !!!\n")

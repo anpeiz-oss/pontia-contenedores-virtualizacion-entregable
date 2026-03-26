@@ -46,8 +46,8 @@ class TaskService:
             "fecha_creacion": retrieved_task.fecha_creacion
         }
     
-    def updateTask(self, task_id: int):
-        updated_registers = task_repository.updateTask(task_id, True)
+    def completeTask(self, task_id: int):
+        updated_registers = task_repository.completeTask(task_id, True)
         if updated_registers == 0:
             raise HTTPException(
                 status_code=404,
@@ -62,6 +62,25 @@ class TaskService:
             "completada": retrieved_task.completada,
             "fecha_creacion": retrieved_task.fecha_creacion
         }
+
+    def updateTask(self, task_id: int, task: TaskCreate):
+        retrieved_task = task_repository.getTask(task_id)
+        if retrieved_task is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No se encontró ninguna tarea con el id {task_id}"
+            )
+        task_db = Task(**task.model_dump())
+        task_db.id = task_id
+        updated_task = task_repository.updateTask(task_db)
+        return {
+            "id": updated_task.id,
+            "titulo": updated_task.titulo,
+            "contenido": updated_task.contenido,
+            "deadline": updated_task.deadline,
+            "completada": updated_task.completada,
+            "fecha_creacion": updated_task.fecha_creacion
+        }
     
     def deleteTask(self, task_id: int):
         deleted_registers = task_repository.deleteTask(task_id)
@@ -70,7 +89,6 @@ class TaskService:
                 status_code=404,
                 detail=f"No se encontró ninguna tarea con el id {task_id}"
             )
-        return {"message": f"Tarea con el id {task_id} eliminada correctamente"}
     
     def getAllTasks(self):
         alltasks = task_repository.getAllTasks()

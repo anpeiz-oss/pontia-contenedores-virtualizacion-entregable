@@ -37,12 +37,25 @@ class TaskRepository:
                 logger.info(f"Registro recuperado de base de datos para obtener la tarea con el id: {task.id}, {task.titulo}, {task.deadline}, {task.completada}, {task.fecha_creacion}")
             return task
 
-    def updateTask(self, task_id: int, completada: bool):
+    def completeTask(self, task_id: int, completada: bool):
         with get_session() as session:
             updatedregisters = session.query(Task).filter(Task.id == task_id).update({Task.completada: completada})
             if updatedregisters > 0:
                 logger.info(f"{updatedregisters} registros de tarea actualizados en base de datos asociados al id {task_id} con el valor completada a {completada}")
             return updatedregisters
+
+    def updateTask(self, task: Task):
+        with get_session() as session:
+            persitent_task = session.get(Task, task.id)
+            persitent_task.completada = task.completada
+            persitent_task.contenido = task.contenido
+            persitent_task.deadline = task.deadline
+            persitent_task.titulo = task.titulo
+            session.add(persitent_task)
+            session.flush()
+            session.refresh(persitent_task)
+            logger.info(f"Tarea con id {persitent_task.id} actualizada correctamente con los valores {persitent_task.titulo}, {persitent_task.contenido}, {persitent_task.deadline}, {persitent_task.completada}, {persitent_task.fecha_creacion}")
+            return persitent_task
 
     def deleteTask(self, task_id: int):
         with get_session() as session:

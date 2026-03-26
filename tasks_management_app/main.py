@@ -3,7 +3,7 @@ from database.session import engine
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from models.task import Base
-
+from fastapi import Request, HTTPException
 
 import logging
 

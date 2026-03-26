@@ -25,17 +25,22 @@ def crear_tarea(task: TaskCreate, task_service: TaskService = Depends(get_task_s
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_tarea(task_id: int, task_service: TaskService = Depends(get_task_service)):
     logger.info(f"Recibida petición de eliminación de tarea con el siguiente id: {task_id}")
-    return task_service.deleteTask(task_id)
+    task_service.deleteTask(task_id)
+
+@router.patch("/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+def actualizar_tarea(task_id: int, task: TaskCreate, task_service: TaskService = Depends(get_task_service)):
+    logger.info(f"Recibida petición de actualización de tarea con el siguiente id: {task_id} y el siguiente cuerpo: \n{task}")
+    return task_service.updateTask(task_id, task)
+
+@router.put("/{task_id}/completar", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+def marcar_completada(task_id: int, task_service: TaskService = Depends(get_task_service)):
+    logger.info(f"Recibida petición de completado de tarea con el siguiente id: {task_id}")
+    return task_service.completeTask(task_id)
 
 @router.get("/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
 def obtener_tarea(task_id: int, task_service: TaskService = Depends(get_task_service)):
     logger.info(f"Recibida petición de obtención de tarea con el siguiente id: {task_id}")
     return task_service.getTask(task_id)
-
-@router.put("/{task_id}/completar", response_model=TaskResponse, status_code=status.HTTP_200_OK)
-def marcar_completada(task_id: int, task_service: TaskService = Depends(get_task_service)):
-    logger.info(f"Recibida petición de completado de tarea con el siguiente id: {task_id}")
-    return task_service.updateTask(task_id)
 
 @router.get("/", response_model=List[TaskResponse], status_code=status.HTTP_200_OK)
 def obtener_todas_tareas(task_service: TaskService = Depends(get_task_service)):
