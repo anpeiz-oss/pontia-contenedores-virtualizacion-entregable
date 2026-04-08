@@ -19,26 +19,23 @@ source venv/bin/activate
 ### 2. Instalar dependencias
 
 ```bash
-pip install -r requirements.txt
+pip install -r ./tasks_management_app/requirements.txt
 ```
 
 ### 3. Ejecutar la aplicación
 
-Puedes usar cualquiera de estos comandos:
+Puedes usar este comando:
 
 ```bash
-# Opción 1: Comando moderno de FastAPI (recomendado)
 fastapi dev .\tasks_management_app\main.py
 
-# Opción 2: Uvicorn tradicional
-uvicorn tasks_management_app.main:app --reload
 ```
 
-La API estará disponible en `http://localhost:8000`
+La API estará disponible mediante el puerto 8080 en un contenedor docker accesible desde el host sobre el que se ejecuta el docker engine y para el caso de un equipo local la encontontraremos en `http://localhost:8080`
 
 ## Endpoints
 
-### TODO: Documentar todos los endpoints
+### Endpoints RESTFUL expuestos
 
 - `GET /` - Información de la API
 - `POST /tasks/` - Crear una nueva tarea

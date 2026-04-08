@@ -3,8 +3,19 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+import logging
+
+# --- Logging ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+
 # --- DB setup ---
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+logger.info(f"This is the resolved DATABASE_URL: {DATABASE_URL} to create the engine from.")
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, expire_on_commit=False)
 # El atributo expire_on_commit=False es necesario para que la sesión no expire al hacer commit, 
 # lo que permitiría acceder a los objetos después de hacer commit.
