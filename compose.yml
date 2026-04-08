@@ -33,6 +33,9 @@ services:
 
   python:
     image: tasks_app:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tasks_app
     environment:
       POSTGRES_HOST: "db"
