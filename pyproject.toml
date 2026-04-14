@@ -1,0 +1,9 @@
+[project]
+name = "tasks_management_app"
+version = "1.0.0"
+description = "Task Management API"
+requires-python = ">=3.12"
+
+[tool.fastapi]
+entrypoint = "tasks_management_app.main:app"
+
